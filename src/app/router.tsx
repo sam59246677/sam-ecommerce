@@ -1,3 +1,4 @@
+
 import { lazy, Suspense, type ReactNode } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
@@ -61,87 +62,92 @@ function withSuspense(element: ReactNode) {
   );
 }
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <MainLayout />,
+      children: [
+        {
+          index: true,
+          element: <Navigate to="/login" replace />,
+        },
+
+        {
+          path: "products",
+          element: withSuspense(<ProductsPage />),
+        },
+
+        {
+          path: "products/:id",
+          element: withSuspense(<ProductDetailsPage />),
+        },
+
+        {
+          path: "cart",
+          element: withSuspense(<CartPage />),
+        },
+
+        {
+          path: "checkout",
+          element: (
+            <ProtectedRoute>
+              {withSuspense(<CheckoutPage />)}
+            </ProtectedRoute>
+          ),
+        },
+
+        {
+          path: "orders",
+          element: (
+            <ProtectedRoute>
+              {withSuspense(<OrdersPage />)}
+            </ProtectedRoute>
+          ),
+        },
+
+        {
+          path: "login",
+          element: withSuspense(<LoginPage />),
+        },
+
+        {
+          path: "admin",
+          element: (
+            <RoleRoute allowedRole="admin">
+              {withSuspense(<AdminDashboardPage />)}
+            </RoleRoute>
+          ),
+        },
+
+        {
+          path: "admin/products",
+          element: (
+            <RoleRoute allowedRole="admin">
+              {withSuspense(<AdminProductsPage />)}
+            </RoleRoute>
+          ),
+        },
+
+        {
+          path: "admin/orders",
+          element: (
+            <RoleRoute allowedRole="admin">
+              {withSuspense(<AdminOrdersPage />)}
+            </RoleRoute>
+          ),
+        },
+
+        {
+          path: "register",
+          element: withSuspense(<RegisterPage />),
+        },
+      ],
+    },
+  ],
   {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      {
-        index: true,
-        element: <Navigate to="/login" replace />,
-      },
-
-      {
-        path: "products",
-        element: withSuspense(<ProductsPage />),
-      },
-
-      {
-        path: "products/:id",
-        element: withSuspense(<ProductDetailsPage />),
-      },
-
-      {
-        path: "cart",
-        element: withSuspense(<CartPage />),
-      },
-
-      {
-        path: "checkout",
-        element: (
-          <ProtectedRoute>
-            {withSuspense(<CheckoutPage />)}
-          </ProtectedRoute>
-        ),
-      },
-
-      {
-        path: "orders",
-        element: (
-          <ProtectedRoute>
-            {withSuspense(<OrdersPage />)}
-          </ProtectedRoute>
-        ),
-      },
-
-      {
-        path: "login",
-        element: withSuspense(<LoginPage />),
-      },
-
-      {
-        path: "admin",
-        element: (
-          <RoleRoute allowedRole="admin">
-            {withSuspense(<AdminDashboardPage />)}
-          </RoleRoute>
-        ),
-      },
-
-      {
-        path: "admin/products",
-        element: (
-          <RoleRoute allowedRole="admin">
-            {withSuspense(<AdminProductsPage />)}
-          </RoleRoute>
-        ),
-      },
-
-      {
-        path: "admin/orders",
-        element: (
-          <RoleRoute allowedRole="admin">
-            {withSuspense(<AdminOrdersPage />)}
-          </RoleRoute>
-        ),
-      },
-
-      {
-        path: "register",
-        element: withSuspense(<RegisterPage />),
-      },
-    ],
-  },
-]);
+    basename: import.meta.env.BASE_URL,
+  }
+);
 
 export default router;
